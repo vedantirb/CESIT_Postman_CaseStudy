@@ -1,0 +1,254 @@
+{
+	"info": {
+		"_postman_id": "137877f9-f22f-4116-9879-dfb5f15fd4a8",
+		"name": "CES_Test_Evaluation",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "47655557",
+		"_collection_link": "https://vedantirb-2357401.postman.co/workspace/82ec23bf-fafc-4198-a345-e1c76388723f/collection/47655557-137877f9-f22f-4116-9879-dfb5f15fd4a8?action=share&source=collection_link&creator=47655557"
+	},
+	"item": [
+		{
+			"name": "getRequest_All",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/carts",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"carts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getRequestById",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/carts/1",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"carts",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getRequestWithValidation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const response_data = pm.response.json();\r",
+							"const cart = response_data.carts[0];\r",
+							"\r",
+							"pm.test(\"Status_code_200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Key_exists\", function(){\r",
+							"    pm.expect(response_data).to.have.property(\"carts\"); //check single property\r",
+							"    pm.expect(response_data).to.have.keys(\"carts\", \"total\", \"skip\", \"limit\");  //check multiple property\r",
+							"    pm.expect(response_data.carts).to.be.an(\"array\");\r",
+							"\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"check_data_types\", function(){\r",
+							"        \r",
+							"        pm.expect(cart.id).to.be.a(\"number\");\r",
+							"        pm.expect(cart.userId).to.be.a(\"number\");\r",
+							"        pm.expect(cart.products).to.be.an(\"array\");\r",
+							"        pm.expect(cart.totalProducts).to.be.a(\"number\");\r",
+							"        pm.expect(cart.totalQuantity).to.be.a(\"number\");\r",
+							"        pm.expect(cart.total).to.be.a(\"number\");\r",
+							"        pm.expect(cart.discountedTotal).to.be.a(\"number\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"pm.test(\"validate_id_pattern\", function(){\r",
+							"    pm.expect(cart.id).to.match(/\\d+/);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"validate_url_pattern\", function() {\r",
+							"\r",
+							"    const cart_data = response_data.carts[0].products[0];\r",
+							"        console.log(cart_data.thumbnail);\r",
+							"        pm.expect(cart_data.thumbnail).to.match(/^https:\\/\\/[\\w-]+\\.[\\w-]+\\.(com|in)\\/[\\w-]+/);\r",
+							"\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"validation_totalQuantity\", function() {\r",
+							"    pm.expect(cart.totalQuantity.toString()).to.match(/^\\d+$/);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/carts",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"carts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "createCart",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const response_data = pm.response.json();\r",
+							"\r",
+							"\r",
+							"pm.test(\"Status_code_201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"products_array_exists\", function() {\r",
+							"    pm.expect(response_data.products).to.be.an(\"array\").that.is.not.empty;\r",
+							"});\r",
+							"\r",
+							"console.log(\"cart created\",response_data.id);\r",
+							"pm.environment.set(\"cartId\", response_data.id);"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userId\": 142,\r\n  \"products\": [\r\n    {\r\n      \"id\": 144,\r\n      \"title\": \"Cricket Helmet\",\r\n      \"price\": 44.99,\r\n      \"quantity\": 4,\r\n      \"total\": 179.96,\r\n      \"discountPercentage\": 11.47,\r\n      \"discountedTotal\": 159.32,\r\n      \"thumbnail\": \"https://cdn.dummyjson.com/products/images/sports-accessories/Cricket%20Helmet/thumbnail.png\"\r\n    },\r\n    {\r\n      \"id\": 98,\r\n      \"title\": \"Baseball Bat\",\r\n      \"price\": 59.99,\r\n      \"quantity\": 3,\r\n      \"total\": 179.97,\r\n      \"discountPercentage\": 8.5,\r\n      \"discountedTotal\": 164.67,\r\n      \"thumbnail\": \"https://cdn.dummyjson.com/products/images/sports-accessories/Baseball%20Bat/thumbnail.png\"\r\n    },\r\n    {\r\n      \"id\": 33,\r\n      \"title\": \"Sports Shoes\",\r\n      \"price\": 79.99,\r\n      \"quantity\": 2,\r\n      \"total\": 159.98,\r\n      \"discountPercentage\": 10,\r\n      \"discountedTotal\": 143.98,\r\n      \"thumbnail\": \"https://cdn.dummyjson.com/products/images/sports-accessories/Sports%20Shoes/thumbnail.png\"\r\n    }\r\n  ],\r\n  \"total\": 519.91,\r\n  \"discountedTotal\": 468.0,\r\n  \"totalProducts\": 3,\r\n  \"totalQuantity\": 9\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/carts/add",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"carts",
+						"add"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deleteRequest",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.test(\"test_cart_addition\", async function(){\r",
+							"    const val = await pm.execution.runRequest(\"47655557-0ff9ccde-887e-4a58-acf1-e09eb075b3ec\");\r",
+							"        console.log(\"Result===============\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {
+							"47655557-0ff9ccde-887e-4a58-acf1-e09eb075b3ec": {
+								"workspace": "82ec23bf-fafc-4198-a345-e1c76388723f",
+								"location": [
+									"CES_Test_Evaluation",
+									"createCart"
+								]
+							}
+						}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/carts/{{cartId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"carts",
+						"{{cartId}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": ""
+		}
+	]
+}
